@@ -8,6 +8,7 @@ exports.StackHeaderBackButton = StackHeaderBackButton;
 exports.StackHeaderTitle = StackHeaderTitle;
 exports.StackHeaderSearchBar = StackHeaderSearchBar;
 exports.StackScreen = StackScreen;
+const options_1 = require("./options");
 const Screen_1 = require("../../views/Screen");
 function StackHeaderComponent(props) {
     return null;
@@ -27,8 +28,12 @@ function StackHeaderTitle(props) {
 function StackHeaderSearchBar(props) {
     return null;
 }
-function StackScreen({ children, ...rest }) {
-    return <Screen_1.Screen {...rest}/>;
+function StackScreen({ children, options, ...rest }) {
+    // This component will only render when used inside a page.
+    const updatedOptions = (0, options_1.appendScreenStackPropsToOptions)(options ?? {}, {
+        children,
+    });
+    return <Screen_1.Screen {...rest} options={updatedOptions}/>;
 }
 exports.StackHeader = Object.assign(StackHeaderComponent, {
     Left: StackHeaderLeft,

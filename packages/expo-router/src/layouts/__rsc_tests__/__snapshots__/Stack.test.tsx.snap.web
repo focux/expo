@@ -1,6 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`renders to RSC 1`] = `
-"1:I["src/views/Screen.tsx",[],"Screen",1]
-0:["$","$L1",null,{"options":{"title":"..."}},null]"
+"2:I["src/views/Screen.tsx",[],"Screen",1]
+1:{"name":"StackScreen","env":"Server","key":null,"owner":null,"props":{"options":{"title":"..."}}}
+0:D"$1"
+0:["$","$L2",null,{"options":{"title":"..."}},"$1"]"
 `;

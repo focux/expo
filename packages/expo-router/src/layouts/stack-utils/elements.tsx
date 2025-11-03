@@ -1,3 +1,4 @@
+import { appendScreenStackPropsToOptions } from './options';
 import type {
   StackHeaderBackButtonProps,
   StackHeaderLeftProps,
@@ -33,8 +34,12 @@ export function StackHeaderSearchBar(props: StackHeaderSearchBarProps) {
   return null;
 }
 
-export function StackScreen({ children, ...rest }: StackScreenProps) {
-  return <Screen {...rest} />;
+export function StackScreen({ children, options, ...rest }: StackScreenProps) {
+  // This component will only render when used inside a page.
+  const updatedOptions = appendScreenStackPropsToOptions(options ?? {}, {
+    children,
+  });
+  return <Screen {...rest} options={updatedOptions} />;
 }
 
 export const StackHeader = Object.assign(StackHeaderComponent, {

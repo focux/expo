@@ -1,5 +1,5 @@
 import { NativeStackNavigationOptions } from '@react-navigation/native-stack';
-import { Children, Fragment, isValidElement, type ReactElement } from 'react';
+import { Children, isValidElement, type ReactElement } from 'react';
 import { StyleSheet } from 'react-native';
 
 import {
@@ -29,7 +29,9 @@ export function appendScreenStackPropsToOptions(
     if (child.type === StackHeaderComponent) {
       updatedOptions = appendStackHeaderPropsToOptions(options, child.props as StackHeaderProps);
     } else {
-      updatedOptions = processUnknownChild(options, child, appendChildOptions);
+      console.warn(
+        `Warning: Unknown child element passed to Stack.Screen: ${(child.type as { name: string }).name ?? child.type}`
+      );
     }
     return updatedOptions;
   }
@@ -97,7 +99,9 @@ function appendStackHeaderPropsToOptions(
         child.props as StackHeaderSearchBarProps
       );
     } else {
-      updatedOptions = processUnknownChild(updatedOptions, child, appendChildOptions);
+      console.warn(
+        `Warning: Unknown child element passed to Stack.Header: ${(child.type as { name: string }).name ?? child.type}`
+      );
     }
     return updatedOptions;
   }
@@ -148,7 +152,7 @@ function appendStackHeaderTitlePropsToOptions(
 
   return {
     ...options,
-    headerTitle: props.children,
+    title: props.children,
     headerLargeTitle: props.large,
     headerTitleAlign: flattenedStyle?.textAlign,
     headerTitleStyle: {
@@ -188,47 +192,6 @@ function appendStackHeaderSearchBarPropsToOptions(
       ...props,
     },
   };
-}
-
-function processUnknownChild<PropsT>(
-  options: NativeStackNavigationOptions,
-  child: React.ReactElement,
-  appendChildOptions: (
-    child: React.ReactElement,
-    options: NativeStackNavigationOptions
-  ) => NativeStackNavigationOptions
-) {
-  if (isChildOfType(child, Fragment)) {
-    Children.forEach(child.props.children, (grandChild) => {
-      if (isValidElement(grandChild)) {
-        options = appendChildOptions(grandChild, options);
-      }
-    });
-  } else if (typeof child.type === 'function') {
-    // Handle function components (not class components)
-    const type = child.type as any;
-    const isClassComponent = !!type.prototype?.isReactComponent;
-
-    if (!isClassComponent) {
-      try {
-        const renderedChildren = type(child.props);
-        Children.forEach(renderedChildren, (grandChild) => {
-          if (isValidElement(grandChild)) {
-            options = appendChildOptions(grandChild, options);
-          }
-        });
-      } catch (e) {
-        if (e instanceof Error && e.message.includes('React is not defined')) {
-          throw new Error(
-            'Using hooks inside custom header components is not supported. Please avoid using hooks in components passed to Stack.Header.'
-          );
-        } else {
-          throw e;
-        }
-      }
-    }
-  }
-  return options;
 }
 
 export function isChildOfType<PropsT>(

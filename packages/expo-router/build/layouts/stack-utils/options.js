@@ -12,7 +12,7 @@ function appendScreenStackPropsToOptions(options, props) {
             updatedOptions = appendStackHeaderPropsToOptions(options, child.props);
         }
         else {
-            updatedOptions = processUnknownChild(options, child, appendChildOptions);
+            console.warn(`Warning: Unknown child element passed to Stack.Screen: ${child.type.name ?? child.type}`);
         }
         return updatedOptions;
     }
@@ -62,7 +62,7 @@ function appendStackHeaderPropsToOptions(options, props) {
             updatedOptions = appendStackHeaderSearchBarPropsToOptions(updatedOptions, child.props);
         }
         else {
-            updatedOptions = processUnknownChild(updatedOptions, child, appendChildOptions);
+            console.warn(`Warning: Unknown child element passed to Stack.Header: ${child.type.name ?? child.type}`);
         }
         return updatedOptions;
     }
@@ -96,7 +96,7 @@ function appendStackHeaderTitlePropsToOptions(options, props) {
     const flattenedLargeStyle = react_native_1.StyleSheet.flatten(props.largeStyle);
     return {
         ...options,
-        headerTitle: props.children,
+        title: props.children,
         headerLargeTitle: props.large,
         headerTitleAlign: flattenedStyle?.textAlign,
         headerTitleStyle: {
@@ -128,39 +128,6 @@ function appendStackHeaderSearchBarPropsToOptions(options, props) {
             ...props,
         },
     };
-}
-function processUnknownChild(options, child, appendChildOptions) {
-    if (isChildOfType(child, react_1.Fragment)) {
-        react_1.Children.forEach(child.props.children, (grandChild) => {
-            if ((0, react_1.isValidElement)(grandChild)) {
-                options = appendChildOptions(grandChild, options);
-            }
-        });
-    }
-    else if (typeof child.type === 'function') {
-        // Handle function components (not class components)
-        const type = child.type;
-        const isClassComponent = !!type.prototype?.isReactComponent;
-        if (!isClassComponent) {
-            try {
-                const renderedChildren = type(child.props);
-                react_1.Children.forEach(renderedChildren, (grandChild) => {
-                    if ((0, react_1.isValidElement)(grandChild)) {
-                        options = appendChildOptions(grandChild, options);
-                    }
-                });
-            }
-            catch (e) {
-                if (e instanceof Error && e.message.includes('React is not defined')) {
-                    throw new Error('Using hooks inside custom header components is not supported. Please avoid using hooks in components passed to Stack.Header.');
-                }
-                else {
-                    throw e;
-                }
-            }
-        }
-    }
-    return options;
 }
 function isChildOfType(element, type) {
     return (0, react_1.isValidElement)(element) && element.type === type;

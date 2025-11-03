@@ -5,7 +5,7 @@ export declare function StackHeaderRight(props: StackHeaderRightProps): null;
 export declare function StackHeaderBackButton(props: StackHeaderBackButtonProps): null;
 export declare function StackHeaderTitle(props: StackHeaderTitleProps): null;
 export declare function StackHeaderSearchBar(props: StackHeaderSearchBarProps): null;
-export declare function StackScreen({ children, ...rest }: StackScreenProps): import("react").JSX.Element;
+export declare function StackScreen({ children, options, ...rest }: StackScreenProps): import("react").JSX.Element;
 export declare const StackHeader: typeof StackHeaderComponent & {
     Left: typeof StackHeaderLeft;
     Right: typeof StackHeaderRight;
